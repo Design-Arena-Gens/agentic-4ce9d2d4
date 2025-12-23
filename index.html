@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع PHP بسيط</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-right: 4px solid #667eea;
+        }
+
+        .info-box h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        .time-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .time-box h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .time-box .time {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .api-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .api-link a {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .api-link a:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #serverInfo {
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 مرحباً بك في موقع PHP 🌟</h1>
+
+        <div class="info-box" id="serverInfo">
+            <h2>معلومات الخادم</h2>
+            <p id="loading">جاري تحميل البيانات...</p>
+        </div>
+
+        <div class="time-box">
+            <h3>الوقت والتاريخ الحالي</h3>
+            <div class="time" id="currentTime">--:--:--</div>
+            <p id="currentDate">جاري التحميل...</p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <strong>سريع</strong>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <strong>آمن</strong>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <strong>متجاوب</strong>
+            </div>
+        </div>
+
+        <div class="api-link">
+            <a href="/api/home.php" target="_blank">عرض صفحة PHP الكاملة</a>
+        </div>
+
+        <div class="footer">
+            <p>تم الإنشاء بواسطة Claude • <span id="year">2024</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const dateStr = now.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            document.getElementById('currentTime').textContent = timeStr;
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('year').textContent = now.getFullYear();
+        }
+
+        // Fetch server info from API
+        async function loadServerInfo() {
+            try {
+                const response = await fetch('/api/index.php');
+                const data = await response.json();
+
+                document.getElementById('serverInfo').innerHTML = `
+                    <h2>معلومات الخادم</h2>
+                    <p><strong>إصدار PHP:</strong> ${data.data.php_version}</p>
+                    <p><strong>وقت الخادم:</strong> ${data.data.server_time}</p>
+                    <p><strong>المنطقة الزمنية:</strong> ${data.data.timezone}</p>
+                `;
+            } catch (error) {
+                document.getElementById('serverInfo').innerHTML = `
+                    <h2>معلومات الخادم</h2>
+                    <p style="color: #999;">معلومات الخادم متاحة عبر <a href="/api/home.php" style="color: #667eea;">صفحة PHP</a></p>
+                `;
+            }
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+        loadServerInfo();
+    </script>
+</body>
+</html>
